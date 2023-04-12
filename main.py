@@ -29,6 +29,7 @@ def main():
 
 def handle_dialog(req, res):
     user_id = req['session']['user_id']
+
     pass
 
 
