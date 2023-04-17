@@ -16,12 +16,12 @@ app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
 @app.route('/math-lab')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', title='MATH-LAB')
 
 
 @app.route('/math-lab/contacts')
 def contacts():
-    return render_template('contacts.html')
+    return render_template('contacts.html', title='CONTACTS')
 
 
 @app.route('/math-lab/info')
