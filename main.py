@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
 from pprint import pprint
 from programmes.nod import nod
+from programmes.equations import *
+from programmes.get_numbers_from_text import numbers_from_linear
 import logging
 
 app = Flask(__name__)
@@ -52,6 +54,13 @@ def handle_dialog(req, res):
         res['response']['text'] = f'НОК {a} и {b} = {a * b / nod(a, b)}'
         res['response']['tts'] = f'НОК {a} и {b} равен {a * b / nod(a, b)}'
         return
+    if 'уравнение' in req['request']['nlu']['tokens']:
+        if 'линейное' in req['request']['nlu']['tokens']:
+            koef = numbers_from_linear(req['request']['command'])
+            answer = linear_equations(koef[0], koef[1])
+            res['response']['text'] = f'Ответ {answer}'
+        return
+
     res['response']['text'] = 'я тебя не понимаю'
 
 
