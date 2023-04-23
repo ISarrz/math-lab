@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from pprint import pprint
 from programmes.nod import nod
 from programmes.equations import *
-from programmes.get_numbers_from_text import numbers_from_linear
+from programmes.get_numbers_from_text import *
 import logging
 
 app = Flask(__name__)
@@ -58,7 +58,11 @@ def handle_dialog(req, res):
         if 'линейное' in req['request']['nlu']['tokens']:
             koef = numbers_from_linear(req['request']['command'])
             answer = linear_equations(koef[0], koef[1])
-            res['response']['text'] = f'Ответ {answer}'
+            res['response']['text'] = f'Ответ: {answer}'
+        if 'квадратное' in req['request']['nlu']['tokens']:
+            koef = numbers_from_square(req['request']['command'])
+            answer = quadratic_equations(koef[0], koef[1], koef[2])
+            res['response']['text'] = f'Ответ: {answer[0]}, {answer[1]}'
         return
 
     res['response']['text'] = 'я тебя не понимаю'

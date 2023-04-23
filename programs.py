@@ -128,10 +128,10 @@ def quadratic_equations(a, b, c):
         sqrtD = sqrtD[0]
         x1 = fraction(-b + sqrtD, 2 * a, format=str())
         x2 = fraction(-b - sqrtD, 2 * a, format=str())
-        return f'конри: {x1}, {x2}'
+        return f'корни: {x1}, {x2}'
     else:
-        x1 = (f'{-b} + {sqrtD} / {2 * a}')
-        x2 = (f'{-b} - {sqrtD} / {2 * a}')
+        x1 = (f'{-b} + {sqrt_irrational(D, format=str())} / {2 * a}')
+        x2 = (f'{-b} - {sqrt_irrational(D, format=str())} / {2 * a}')
         return x1, x2
     
 
