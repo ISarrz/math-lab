@@ -136,8 +136,7 @@ def quadratic_equations(a, b, c):
         x2 = (f'({-b} - {sqrt_irrational(D, format=str())}) / {2 * a}')
         return x1, x2
 
-
-class function():
+class Function:
     def __init__(self, args={}) -> None:
         self.book = {
             'область определения': 0,
@@ -154,4 +153,3 @@ class function():
         }
         for i in args.keys():
             if self.book.get(i): self.book = args[i]
-

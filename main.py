@@ -1,8 +1,9 @@
 from flask import Flask, request, jsonify
-from pprint import pprint
 from programmes.nod import nod
 from programmes.equations import *
 from programmes.get_numbers_from_text import *
+from programmes.functions import *
+from programmes.get_figure_and_size import *
 import logging
 
 app = Flask(__name__)
@@ -63,6 +64,34 @@ def handle_dialog(req, res):
             koef = numbers_from_square(req['request']['command'])
             answer = quadratic_equations(koef[0], koef[1], koef[2])
             res['response']['text'] = f'Ответ: {answer[0]}, {answer[1]}'
+        return
+    if 'множители' in req['request']['nlu']['tokens'] or 'делители' in req['request']['nlu']['tokens']:
+        number = 0
+        for i in req['request']['nlu']['entities']:
+            if i['type'] == 'YANDEX.NUMBER':
+                number = i['value']
+        answer = get_divider(number)
+        answer = ' '.join([str(i) for i in answer.keys()])
+        res['response']['text'] = f'Простые делители числа {number}: {answer}'
+        return
+    if 'свойства' in req['request']['nlu']['tokens'] and 'функции' in req['request']['nlu']['tokens']:
+        func = ''
+        for i in req['request']['nlu']['tokens']:
+            if 'линейн' in i:
+                func = 'линейная'
+        answer = features(func)
+        if answer == '':
+            res['response']['text'] = 'Извини, я пока что не знаю такую функцию'
+            return
+        text = ''
+        for i, j in answer.items():
+            text += f'{i}: {j}\n'
+        res['response']['text'] = text
+        return
+    if 'площадь' in req['request']['nlu']['tokens']:
+        size, object = figure(req)
+        #тут должен быть вызов функции для расчета площади
+        res['response']['text'] = ''
         return
 
     res['response']['text'] = 'я тебя не понимаю'
