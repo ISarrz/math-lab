@@ -88,6 +88,13 @@ body{
   margin-left: 5%;
   margin-top: 2%;
 }
+.simple_text_small{
+  color: #66FCF1;
+  font-weight: 800;
+  font-size: 25px;
+  margin-left: 5%;
+  margin-top: 2%;
+}
 .logotype {
 
   font-weight: 900;
