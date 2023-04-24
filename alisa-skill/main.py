@@ -13,6 +13,10 @@ app.config['SECRET_KEY'] = 'math-l'
 logging.basicConfig(level=logging.DEBUG)
 
 sessionStorage = {}
+skills = ['Умею вычислять квадратный корень числа', 'Могу решить приведённое квадратное и линейное уравнения',
+          'Нахожу НОД и НОК 2 чисел', 'По заданной квадратичной или линейной функции, рассказываю её свойства.',
+          'Умею вычислять площадь круга, треугольника, квадрата, прямоугольника и выпуклого четырехугольника по 4 сторонам',
+          'На этом пока что всё, но мои навыки будут увеличиваться со временем']
 
 
 @app.route('/post', methods=['POST'])
@@ -34,10 +38,35 @@ def main():
 
 def handle_dialog(req, res):
     user_id = req['session']['user_id']
-    if req['session']['new']:
-        res['response']['tts'] = 'Привет, что ты хочешь решить'
-        res['response']['text'] = 'Привет, что ты хочешь решить'
+
+    if req['session']['new']:  # Первое знакомство
+        res['response'][
+            'tts'] = 'Привет, что ты хочешь решить\nЕсли хочешь узнать что я умею, просто спроси: "Что ты умеешь?"'
+        res['response'][
+            'text'] = 'Привет, что ты хочешь решить\nЕсли хочешь узнать что я умею, просто спроси: "Что ты умеешь?"'
+        sessionStorage[user_id] = [0, False]
         return
+
+    if sessionStorage[user_id][1]:
+        if ('да' in req['request']['nlu']['tokens'] or 'конечно' in req['request']['nlu']['tokens']) and skills[
+            sessionStorage[user_id][0]] != skills[-1]:
+            res['response']['text'] = skills[sessionStorage[user_id][0]] + '\nПродолжим?'
+            sessionStorage[user_id][0] += 1
+            return
+        else:
+            sessionStorage[user_id] = [0, False]
+            res['response'][
+                'text'] = 'Что ты хочешь решить'
+            return
+
+    if ('умеешь' in req['request']['nlu']['tokens'] or 'можешь' in req['request']['nlu']['tokens']) and ('что' in
+                                                                                                         req['request'][
+                                                                                                             'nlu'][
+                                                                                                             'tokens']):
+        res['response']['text'] = skills[0] + '\nПродолжим?'
+        sessionStorage[user_id] = [1, True]
+        return
+
     if 'нод' in req['request']['original_utterance'].lower():
         try:
             a, b = req['request']['nlu']['entities'][-1]['value'], req['request']['nlu']['entities'][-2]['value']
