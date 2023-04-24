@@ -6,6 +6,7 @@ from programmes.functions import *
 from programmes.get_figure_and_size import *
 from programmes.area import *
 import logging
+from math import sqrt
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'math-l'
@@ -56,6 +57,17 @@ def handle_dialog(req, res):
         res['response']['text'] = f'НОК {a} и {b} = {a * b / nod(a, b)}'
         res['response']['tts'] = f'НОК {a} и {b} равен {a * b / nod(a, b)}'
         return
+    if 'корень' in req['request']['nlu']['tokens']:
+        yan = req['request']['nlu']['entities']
+        number = ''
+        for i in yan:
+            if i['type'] == 'YANDEX.NUMBER':
+                number = i['value']
+        if number == '':
+            res['response']['text'] = f'Ошибка'
+        else:
+            res['response']['text'] = f'Корень из {number} = {sqrt(number)}.'
+        return
     if 'уравнение' in req['request']['nlu']['tokens']:
         if 'линейное' in req['request']['nlu']['tokens']:
             koef = numbers_from_linear(req['request']['command'])
@@ -75,20 +87,30 @@ def handle_dialog(req, res):
         answer = ' '.join([str(i) for i in answer.keys()])
         res['response']['text'] = f'Простые делители числа {number}: {answer}'
         return
-    """if 'свойства' in req['request']['nlu']['tokens'] and 'функции' in req['request']['nlu']['tokens']:
+    if 'свойства' in req['request']['nlu']['tokens'] and 'функции' in req['request']['nlu']['tokens']:
         func = ''
         for i in req['request']['nlu']['tokens']:
-            if 'линейн' in i:
+            if 'линей' in i:
                 func = 'линейная'
-        answer = features(func)
-        if answer == '':
+                break
+            if 'квадра' in i:
+                func = 'квадратичная'
+                break
+        if func == '':
             res['response']['text'] = 'Извини, я пока что не знаю такую функцию'
             return
+        elif func == 'линейная':
+            k, b = numbers_from_linear(req['request']['original_utterance'].lower())
+            answer = linear_function(k, b)
+        elif func == 'квадратичная':
+            a, b, c = numbers_from_square(req['request']['original_utterance'].lower())
+            answer = quadratic_function(a, b, c)
         text = ''
         for i, j in answer.items():
-            text += f'{i}: {j}\n'
+            text += f'{i}: {j};\n'
+
         res['response']['text'] = text
-        return"""
+        return
     if 'площадь' in req['request']['nlu']['tokens']:
         size, object = figure(req)
         if object == 'круг':
