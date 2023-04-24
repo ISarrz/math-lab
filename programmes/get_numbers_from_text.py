@@ -20,7 +20,6 @@ def numbers_from_linear(eq):
                 break
     except Exception:
         try:
-            print(0)
             eq = eq.split('=')
             eq[0] = eq[0].replace(' ', '')
             ind = eq[0].find('x')
@@ -38,13 +37,13 @@ def numbers_from_linear(eq):
                     break
         except Exception:
             pass
-    if not b:
-        b = 0
+    if b == '':
+        b = '0'
     if k == '-':
         k = '1-'
     if k == '+':
         k = '1+'
-    if not k:
+    if k == '':
         k = '1'
 
     return int(k[::-1]), int(b)
@@ -80,7 +79,7 @@ def numbers_from_square(eq):
             eq = eq.split('=')
             eq[0] = eq[0].replace(' ', '')
             ind = eq[0].find('x^2')
-            if ind == '-1':#проверка на алфавит
+            if ind == -1:#проверка на алфавит
                 ind = eq[0].find('х^2')
             for i in range(ind - 1, -1, -1):
                 if not eq[0][i].isalpha():
@@ -93,8 +92,8 @@ def numbers_from_square(eq):
                 else:
                     break
             ind = eq[0].rfind('x')
-            if ind == '-1':#проверка на алфавит
-                ind = eq[0].find('х')
+            if ind == -1:#проверка на алфавит
+                ind = eq[0].rfind('х')
             for i in range(ind + 1, len(eq[0])):
                 if not eq[0][i].isalpha():
                     c += eq[0][i]
@@ -108,9 +107,11 @@ def numbers_from_square(eq):
         a = '1'
     if not c:
         c = '0'
+    if c == '':
+        c = '0'
     if b == '+':
         b = '+1'
     if b == '-':
         b = '-1'
+    print(a,b, c)
     return int(a[::-1]), int(b), int(c)
-
