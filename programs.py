@@ -1,5 +1,5 @@
 from math import sqrt
-
+from math import pi
 
 def get_divider(a, format=dict()):
     book = {}
@@ -115,40 +115,128 @@ def linear_equations(k, b):
     return fraction(-b, k, format=str())
 
 
-def quadratic_equations(a, b, c):
+def quadratic_equations(a, b, c, format=str()):
     if a == 0:
         return linear_equations(b, c)
     D = b ** 2 - 4 * a * c
     if D == 0:
-        return fraction(-b, 2 * a)
+        if format == str():
+            return fraction(-b, 2 * a)
+        else:
+            return fraction(-b, 2 * a, format=tuple())
     if D < 0:
-        return 'корней нет'
+        if format == str():
+            return 'корней нет'
+        else:
+            return ()
     sqrtD = sqrt_irrational(D)
     if sqrtD[1] == 1:
         sqrtD = sqrtD[0]
         x1 = fraction(-b + sqrtD, 2 * a, format=str())
         x2 = fraction(-b - sqrtD, 2 * a, format=str())
-        return f'конри: {x1}, {x2}'
+        if format == str():
+            return f'корни: {x1}, {x2}'
+        else:
+            return (x1 ,x2)
     else:
         x1 = (f'{-b} + {sqrtD} / {2 * a}')
         x2 = (f'{-b} - {sqrtD} / {2 * a}')
-        return x1, x2
+        if format == str():
+            return f'корни: {x1}, {x2}'
+        else:
+            return (x1 ,x2)
     
 
-class function():
-    def __init__(self, args={}) -> None:
-        self.book = {
-            'область определения': 0,
-            'нули': [],
+def quadratic_function(a, b, c):
+    if a == 0:
+        linear_function(b, c)
+    book = {
+            'область определения': 'бесконечность',
+            'нули': quadratic_equations(a, b, c, format=tuple()),
             'промежутки знакопостоянства':[0, 0], # список первый элемент когда функция больше нуля, второй когда меньше
             'монотонность' :[0, 0], # список первый элемент - промежутки возрастания, второй - убывания
-            'четность': '',
-            'периодичность': '',
-            'непрерывность' : '',
+            'четность': 'четная',
+            'периодичность': 'непериодиченская',
+            'непрерывность' : 'непрерывная',
             'ограниченность': '',
-            'экстримальные значения': [0, 0], # набольшее и наименьшие значения функции
-            'область значений': []
+            'экстримальные значения': '', # набольшее и наименьшие значения функции
+            'область значений': 'бесконечность'
         }
-        for i in args.keys():
-            if self.book.get(i): self.book = args[i]
+    if a > 0:
+        if book['нули']:
+            zero = book['нули']
+            if len(zero) == 1:
+                string = f'y > 0 при x != {zero[0]}'
+                book['промежутки знакопостоянства'] = string
+            else:
+                string = f'y > 0 при x < {zero[0]} или x > {zero[1]}; y < 0 при {zero[0]} < x < {zero[1]} '
+                book['промежутки знакопостоянства'] = string
+                
+        else:
+            string = f'y > 0 при любом X'
+            book['промежутки знакопостоянства'] = string
+        string = f'Функция убывает при x <= {fraction(-b/(2*a))}; возрастает при x >= {fraction(-b/(2*a))}'
+        book['монотонность'] = string
+        book['ограниченность'] = 'ограничена снизу'
+        book['экстримальные значения'] = f'наибольшего значения не  существует, наименьшее y={fraction(-b**2 / (4 * a))}'
+    if a < 0:
+        if book['нули']:
+            zero = book['нули']
+            if len(zero) == 1:
+                string = f'y < 0 при x != {zero[0]}'
+                book['промежутки знакопостоянства'] = string
+            else:
+                string = f'y > 0 при {zero[0]} < x < {zero[1]}; y < 0 при x < {zero[0]} или x > {zero[1]}'
+                book['промежутки знакопостоянства'] = string
+        else:
+            string = f'y < 0 при любом X'
+            book['промежутки знакопостоянства'] = string
+        string = f'Функция возрастает при x <= {fraction(-b/(2*a))}; убывает при x >= {fraction(-b/(2*a))}'
+        book['монотонность'] = string
+        book['ограниченность'] = 'ограничена сверху'
+        book['экстримальные значения'] = f'наибольшее значение y={fraction(-b**2 / (4 * a))}, наименьшее значенияя не существует'
+
+        
+def linear_function(k, b):
+    book = {
+            'область определения': 'бесконечность',
+            'нули': linear_equations(k, b),
+            'промежутки знакопостоянства':[0, 0], # список первый элемент когда функция больше нуля, второй когда меньше
+            'монотонность' :[0, 0], # список первый элемент - промежутки возрастания, второй - убывания
+            'четность': 'нечетная',
+            'периодичность': 'непериодиченская',
+            'непрерывность' : 'непрерывная',
+            'ограниченность': 'неограничена',
+            'экстримальные значения': 'наибольшего и наименьшего значений не существует', # набольшее и наименьшие значения функции
+            'область значений': 'бесконечность'
+        }
+    if k == 0:
+        return f'прямая y={-b}'
+    elif k > 0:
+        zero = book['нули']
+        string = f'y > 0 при x > {zero}; y < при x < {zero}'
+        book['промежутки знакопостоянства'] = string
+        book['монотонность'] = f'функция монотонно возрастает'
+
+    elif k < 0:
+        zero = book['нули']
+        string = f'y > 0 при x < {zero}; y < при x > {zero}'
+        book['промежутки знакопостоянства'] = string
+        book['монотонность'] = f'функция монотонно убывает'
+    return book
+
+
+def area_of_the_triangle(a, b, c):
+    if not (a + b < c and a + c < b and b + c < a): return 'треугольник не существует'
+    p = (a + b + c)/ 2
+    return sqrt(p * (p - a) * (p - b) * (p - c))
+
+
+def area_of_the_quadrilateral(a, b, c, d):
+    p = (a + b + c + d) / 2
+    return sqrt((p - a) * (p - b) * (p - c) * (p - d))
+
+
+def area_of_the_circle(r):
+    return pi * r ** 2
 
