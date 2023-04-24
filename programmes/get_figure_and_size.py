@@ -26,15 +26,23 @@ def figure(req):
                 if len(size) == 2:
                     check = True
                     break
-        if 'параллелог' in i:
+        """if 'параллелог' in i:
             object = 'параллелограмм'
             for i in req['request']['nlu']['entities']:
                 if i['type'] == 'YANDEX.NUMBER':
                     size.append(i['value'])
                 if len(size) == 2:
                     check = True
+                    break"""
+
+        if 'круг' in i or 'окружно' in i:
+            object = 'круг'
+            for i in req['request']['nlu']['entities']:
+                if i['type'] == 'YANDEX.NUMBER':
+                    size.append(i['value'])
+                    check = True
                     break
+
         if check:
             break
     return size, object
-

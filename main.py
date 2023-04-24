@@ -4,6 +4,7 @@ from programmes.equations import *
 from programmes.get_numbers_from_text import *
 from programmes.functions import *
 from programmes.get_figure_and_size import *
+from programmes.area import *
 import logging
 
 app = Flask(__name__)
@@ -74,7 +75,7 @@ def handle_dialog(req, res):
         answer = ' '.join([str(i) for i in answer.keys()])
         res['response']['text'] = f'Простые делители числа {number}: {answer}'
         return
-    if 'свойства' in req['request']['nlu']['tokens'] and 'функции' in req['request']['nlu']['tokens']:
+    """if 'свойства' in req['request']['nlu']['tokens'] and 'функции' in req['request']['nlu']['tokens']:
         func = ''
         for i in req['request']['nlu']['tokens']:
             if 'линейн' in i:
@@ -87,11 +88,18 @@ def handle_dialog(req, res):
         for i, j in answer.items():
             text += f'{i}: {j}\n'
         res['response']['text'] = text
-        return
+        return"""
     if 'площадь' in req['request']['nlu']['tokens']:
         size, object = figure(req)
-        #тут должен быть вызов функции для расчета площади
-        res['response']['text'] = ''
+        if object == 'круг':
+            answer = area_of_the_circle(size)
+        if object == 'треугольник':
+            answer = area_of_the_triangle(*size)
+        if object == 'квадрат':
+            answer = area_of_the_quadrilateral(size[0], size[0], size[0], size[0])
+        if object == 'прямоугольник':
+            answer = area_of_the_quadrilateral(size[0], size[1], size[1], size[0])
+        res['response']['text'] = f'Площадь {object}a = {answer}.'
         return
 
     res['response']['text'] = 'я тебя не понимаю'
