@@ -115,3 +115,6 @@ def numbers_from_square(eq):
         b = '-1'
     print(a, b, c)
     return int(a[::-1]), int(b), int(c)
+
+
+print(numbers_from_square('реши квадратное уравнение x^2 + 5x + 8 = 0'))

@@ -76,7 +76,7 @@ def handle_dialog(req, res):
         if 'квадратное' in req['request']['nlu']['tokens']:
             koef = numbers_from_square(req['request']['command'])
             answer = quadratic_equations(koef[0], koef[1], koef[2])
-            res['response']['text'] = f'Ответ: {answer[0]}, {answer[1]}'
+            res['response']['text'] = f'{answer}'
         return
     if 'множители' in req['request']['nlu']['tokens'] or 'делители' in req['request']['nlu']['tokens']:
         number = 0
