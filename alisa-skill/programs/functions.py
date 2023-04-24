@@ -1,5 +1,4 @@
-import json
-from programmes.equations import *
+from programs.equations import *
 
 
 def quadratic_function(a, b, c):

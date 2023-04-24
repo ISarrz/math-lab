@@ -1,10 +1,10 @@
 from flask import Flask, request, jsonify
-from programmes.nod import nod
-from programmes.equations import *
-from programmes.get_numbers_from_text import *
-from programmes.functions import *
-from programmes.get_figure_and_size import *
-from programmes.area import *
+from programs.nod import nod
+from programs.equations import *
+from programs.get_numbers_from_text import *
+from programs.functions import *
+from programs.get_figure_and_size import *
+from programs.area import *
 import logging
 from math import sqrt
 
