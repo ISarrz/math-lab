@@ -121,7 +121,7 @@ def quadratic_equations(a, b, c, format=str()):
     D = b ** 2 - 4 * a * c
     if D == 0:
         if format == str():
-            return fraction(-b, 2 * a)
+            return fraction(-b, 2 * a, format=str())
         else:
             return fraction(-b, 2 * a, format=tuple())
     if D < 0:
@@ -196,7 +196,7 @@ def quadratic_function(a, b, c):
         book['ограниченность'] = 'ограничена сверху'
         book['экстримальные значения'] = f'наибольшее значение y={fraction(-b**2 / (4 * a))}, наименьшее значенияя не существует'
 
-        
+
 def linear_function(k, b):
     book = {
             'область определения': 'бесконечность',
@@ -240,3 +240,6 @@ def area_of_the_quadrilateral(a, b, c, d):
 def area_of_the_circle(r):
     return pi * r ** 2
 
+
+a, b, c = map(int, input().split())
+print(quadratic_equations(a, b , c))
