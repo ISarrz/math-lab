@@ -61,7 +61,7 @@ def handle_dialog(req, res):
         sessionStorage[user_id] = [0, False]
         return
 
-    if sessionStorage[user_id][1]:
+    if sessionStorage.get(user_id, [''])[1]:
         if ('да' in req['request']['nlu']['tokens'] or 'конечно' in req['request']['nlu']['tokens']) and skills[
             sessionStorage[user_id][0]] != skills[-1]:
             res['response']['text'] = skills[sessionStorage[user_id][0]] + '\nПродолжим?'
