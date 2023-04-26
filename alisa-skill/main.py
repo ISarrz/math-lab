@@ -188,4 +188,4 @@ def handle_dialog(req, res):
 
 
 if __name__ == '__main__':
-    print(linear_equations(5, 8))
+    app.run()
