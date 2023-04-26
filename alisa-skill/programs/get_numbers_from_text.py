@@ -1,4 +1,4 @@
-def numbers_from_linear(eq):
+def numbers_from_linear(eq, pl=0):
     eq = (eq.lower()).strip()
     k, b = '', ''
     try:
@@ -6,33 +6,33 @@ def numbers_from_linear(eq):
             raise Exception
         eq = eq.split('равно')
 
-        eq[0] = eq[0].replace(' ', '')
-        ind = eq[0].find('икс')
+        eq[pl] = eq[pl].replace(' ', '')
+        ind = eq[pl].find('икс')
         for i in range(ind - 1, -1, -1):
-            if not eq[0][i].isalpha():
-                k += eq[0][i]
+            if not eq[pl][i].isalpha():
+                k += eq[pl][i]
             else:
                 break
         for i in range(ind + 3, len(eq[0])):
-            if not eq[0][i].isalpha():
-                b += eq[0][i]
+            if not eq[pl][i].isalpha():
+                b += eq[pl][i]
             else:
                 break
     except Exception:
         try:
             eq = eq.split('=')
-            eq[0] = eq[0].replace(' ', '')
-            ind = eq[0].find('x')
+            eq[pl] = eq[pl].replace(' ', '')
+            ind = eq[pl].find('x')
             if ind == -1:  # проверка на алфавит
-                ind = eq[0].find('х')
+                ind = eq[pl].find('х')
             for i in range(ind - 1, -1, -1):
-                if not eq[0][i].isalpha():
-                    k += eq[0][i]
+                if not eq[pl][i].isalpha():
+                    k += eq[pl][i]
                 else:
                     break
             for i in range(ind + 1, len(eq[0])):
-                if not eq[0][i].isalpha():
-                    b += eq[0][i]
+                if not eq[pl][i].isalpha():
+                    b += eq[pl][i]
                 else:
                     break
         except Exception:
@@ -49,54 +49,54 @@ def numbers_from_linear(eq):
     return int(k[::-1]), int(b)
 
 
-def numbers_from_square(eq):
+def numbers_from_square(eq, pl=0):
     eq = (eq.lower()).strip()
     a, b, c = '', '', ''
     try:
         if 'равно' not in eq:
             raise Exception
         eq = eq.split('равно')
-        eq[0] = eq[0].replace(' ', '')
-        ind = eq[0].find('икс-квадрат')
+        eq[pl] = eq[pl].replace(' ', '')
+        ind = eq[pl].find('икс-квадрат')
         for i in range(ind - 1, -1, -1):
-            if not eq[0][i].isalpha():
-                a += eq[0][i]
+            if not eq[pl][i].isalpha():
+                a += eq[pl][i]
             else:
                 break
         for i in range(ind + 11, len(eq[0])):
-            if not eq[0][i].isalpha():
-                b += eq[0][i]
+            if not eq[pl][i].isalpha():
+                b += eq[pl][i]
             else:
                 break
-        ind = eq[0].rfind('икс')
+        ind = eq[pl].rfind('икс')
         for i in range(ind + 3, len(eq[0])):
-            if not eq[0][i].isalpha():
-                c += eq[0][i]
+            if not eq[pl][i].isalpha():
+                c += eq[pl][i]
             else:
                 break
     except Exception:
         try:
             eq = eq.split('=')
-            eq[0] = eq[0].replace(' ', '')
-            ind = eq[0].find('x^2')
+            eq[pl] = eq[pl].replace(' ', '')
+            ind = eq[pl].find('x^2')
             if ind == -1:  # проверка на алфавит
-                ind = eq[0].find('х^2')
+                ind = eq[pl].find('х^2')
             for i in range(ind - 1, -1, -1):
-                if not eq[0][i].isalpha():
-                    a += eq[0][i]
+                if not eq[pl][i].isalpha():
+                    a += eq[pl][i]
                 else:
                     break
             for i in range(ind + 3, len(eq[0])):
-                if not eq[0][i].isalpha():
-                    b += eq[0][i]
+                if not eq[pl][i].isalpha():
+                    b += eq[pl][i]
                 else:
                     break
-            ind = eq[0].rfind('x')
+            ind = eq[pl].rfind('x')
             if ind == -1:  # проверка на алфавит
-                ind = eq[0].rfind('х')
+                ind = eq[pl].rfind('х')
             for i in range(ind + 1, len(eq[0])):
-                if not eq[0][i].isalpha():
-                    c += eq[0][i]
+                if not eq[pl][i].isalpha():
+                    c += eq[pl][i]
                 else:
                     break
         except Exception:
@@ -113,8 +113,4 @@ def numbers_from_square(eq):
         b = '+1'
     if b == '-':
         b = '-1'
-    print(a, b, c)
     return int(a[::-1]), int(b), int(c)
-
-
-print(numbers_from_square('реши квадратное уравнение x^2 + 5x + 8 = 0'))
