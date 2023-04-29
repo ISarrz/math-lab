@@ -118,12 +118,12 @@ def handle_dialog(req, res):
     if check:
         try:
             if 'линейное' in req['request']['nlu']['tokens'] or 'линейного' in req['request']['nlu']['tokens']:
-                koef = numbers_from_linear(req['request']['command'])
+                koef = numbers_from_linear(req['request']['command'], pl=1)
                 print(koef)
                 answer = linear_equations(koef[0], koef[1])
                 res['response']['text'] = f'Ответ: {answer}'
             if 'квадратное' in req['request']['nlu']['tokens'] or 'квадратного' in req['request']['nlu']['tokens']:
-                koef = numbers_from_square(req['request']['command'])
+                koef = numbers_from_square(req['request']['command'], pl=1)
                 answer = quadratic_equations(koef[0], koef[1], koef[2])
                 res['response']['text'] = f'{answer}'
             if res['response']['text'] == '':
