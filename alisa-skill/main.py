@@ -9,7 +9,7 @@ import logging
 from math import sqrt
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'math-l'
+app.config['SECRET_KEY'] = 'math-lab'
 logging.basicConfig(level=logging.DEBUG)
 
 sessionStorage = {}
@@ -59,19 +59,8 @@ def handle_dialog(req, res):
         res['response'][
             'text'] = 'Привет, что ты хочешь решить\nЕсли хочешь узнать что я умею, просто спроси: "Что ты умеешь?"'
         sessionStorage[user_id] = [0, False]
-        return
+        return res
 
-    if sessionStorage.get(user_id, [''])[1]:
-        if ('да' in req['request']['nlu']['tokens'] or 'конечно' in req['request']['nlu']['tokens']) and skills[
-            sessionStorage[user_id][0]] != skills[-1]:
-            res['response']['text'] = skills[sessionStorage[user_id][0]] + '\nПродолжим?'
-            sessionStorage[user_id][0] += 1
-            return
-        else:
-            sessionStorage[user_id] = [0, False]
-            res['response'][
-                'text'] = 'Что ты хочешь решить'
-            return
 
     if ('умеешь' in req['request']['nlu']['tokens'] or 'можешь' in req['request']['nlu']['tokens']) and ('что' in
                                                                                                          req['request'][
@@ -79,7 +68,19 @@ def handle_dialog(req, res):
                                                                                                              'tokens']):
         res['response']['text'] = skills[0] + '\nПродолжим?'
         sessionStorage[user_id] = [1, True]
-        return
+        return res
+
+    if sessionStorage[user_id][1]:
+        if ('да' in req['request']['nlu']['tokens'] or 'конечно' in req['request']['nlu']['tokens']) and sessionStorage[user_id][0] < len(skills):
+            res['response']['text'] = skills[sessionStorage[user_id][0]] + '\nПродолжим?'
+            sessionStorage[user_id][0] += 1
+            return res
+        else:
+            sessionStorage[user_id] = [0, False]
+            res['response'][
+                'text'] = 'Что ты хочешь решить'
+            return res
+
 
     if 'нод' in req['request']['original_utterance'].lower():
         try:
@@ -87,10 +88,10 @@ def handle_dialog(req, res):
         except Exception as f:
             res['response']['text'] = f'Повтори пожалуйста'
 
-            return
+            return res
         res['response']['text'] = f'НОД {a} и {b} = {nod(a, b)}'
         res['response']['tts'] = f'НОД {a} и {b} равен {nod(a, b)}'
-        return
+        return res
     if 'нок' in req['request']['original_utterance'].lower():
         try:
             a, b = req['request']['nlu']['entities'][-1]['value'], req['request']['nlu']['entities'][-2]['value']
@@ -99,7 +100,7 @@ def handle_dialog(req, res):
             return
         res['response']['text'] = f'НОК {a} и {b} = {a * b / nod(a, b)}'
         res['response']['tts'] = f'НОК {a} и {b} равен {a * b / nod(a, b)}'
-        return
+        return res
     if 'корень' in req['request']['nlu']['tokens']:
         yan = req['request']['nlu']['entities']
         number = ''
@@ -110,7 +111,7 @@ def handle_dialog(req, res):
             res['response']['text'] = f'Ошибка'
         else:
             res['response']['text'] = f'Корень из {number} = {sqrt(number)}.'
-        return
+        return res
     check = False
     for i in req['request']['nlu']['tokens']:
         if 'уравн' in i:
@@ -118,20 +119,21 @@ def handle_dialog(req, res):
     if check:
         try:
             if 'линейное' in req['request']['nlu']['tokens'] or 'линейного' in req['request']['nlu']['tokens']:
-                koef = numbers_from_linear(req['request']['command'], pl=1)
+                koef = numbers_from_linear(req['request']['command'])
                 print(koef)
                 answer = linear_equations(koef[0], koef[1])
                 res['response']['text'] = f'Ответ: {answer}'
+                return res
             if 'квадратное' in req['request']['nlu']['tokens'] or 'квадратного' in req['request']['nlu']['tokens']:
-                koef = numbers_from_square(req['request']['command'], pl=1)
+                koef = numbers_from_square(req['request']['command'])
                 answer = quadratic_equations(koef[0], koef[1], koef[2])
                 res['response']['text'] = f'{answer}'
+                return res
             if res['response']['text'] == '':
                 raise Exception
-
         except Exception:
             res['response']['text'] = f'Повторите, пожалуйста'
-        return
+            return res
     if 'множители' in req['request']['nlu']['tokens'] or 'делители' in req['request']['nlu']['tokens']:
         number = 0
         for i in req['request']['nlu']['entities']:
@@ -140,7 +142,7 @@ def handle_dialog(req, res):
         answer = get_divider(number)
         answer = ' '.join([str(i) for i in answer.keys()])
         res['response']['text'] = f'Простые делители числа {number}: {answer}'
-        return
+        return res
     if 'свойства' in req['request']['nlu']['tokens'] and 'функции' in req['request']['nlu']['tokens']:
         func = ''
         for i in req['request']['nlu']['tokens']:
@@ -152,7 +154,7 @@ def handle_dialog(req, res):
                 break
         if func == '':
             res['response']['text'] = 'Извини, я пока что не знаю такую функцию'
-            return
+            return res
         elif func == 'линейная':
             k, b = numbers_from_linear(req['request']['original_utterance'].lower())
             answer = linear_function(k, b)
@@ -164,7 +166,7 @@ def handle_dialog(req, res):
             text += f'{i}: {j};\n'
 
         res['response']['text'] = text
-        return
+        return res
     if 'площадь' in req['request']['nlu']['tokens']:
         size, object = figure(req)
         try:
@@ -182,9 +184,18 @@ def handle_dialog(req, res):
         except Exception:
             res['response']['text'] = 'Повторите ещё раз пожалуйста'
 
-        return
+        return res
 
+    if 'формулы' in req['request']['nlu']['tokens']:
+        res['response']['text'] = 'картинка'
+        res['response']['card'] = {
+            'type': "BigImage",
+            'image_id': "997614/46211ada06b4cc97efcb",
+            'description': 'Формулы вычисления площади треугольника'
+        }
+        return res
     res['response']['text'] = 'я тебя не понимаю'
+    return res
 
 
 if __name__ == '__main__':
