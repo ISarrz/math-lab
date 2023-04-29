@@ -3,7 +3,7 @@ from math import pi
 
 def get_divider(a, format=dict()):
     book = {}
-    with open('simple_numbers.txt', 'r') as file:
+    with open('alisa-skill/simple_numbers.txt', 'r') as file:
         while True:
             number = int(file.readline())
             if number > a or a == 1:
